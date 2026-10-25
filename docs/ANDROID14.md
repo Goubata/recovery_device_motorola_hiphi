@@ -35,7 +35,7 @@ requires the failing recovery log and the ROM/vendor configuration.
 
 The AIDL filename translation addresses library naming, not every possible ABI
 change. CI checks dependency presence, not symbol resolution or successful TEE
-communication. Android 15/16 and all custom ROMs are not automatically supported
+communication. Android 15/16/17 and all custom ROMs are not automatically supported
 by an Android 14 recovery. Firmware, vendor HALs, synthetic-password changes,
 wrapped-key policy and the kernel must be compatible. Do not strip wrappedkey_v0
 or change encryption flags to make an incompatible encrypted filesystem mount.
@@ -78,7 +78,7 @@ Record exact model/SKU, ROM and Android version, firmware/vendor version, kernel
 build artifact SHA256 and lock type. Test metadata/DE access first, then PIN,
 pattern/password CE unlock and reading a known file in internal storage. Include
 F2FS/EXT4 only where actually used by a supported ROM. Verify touch, reboot,
-sideload and MTP separately. Record Android 14/15/16 results individually.
+sideload and MTP separately. Record Android 14/15/16/17 results individually in [the compatibility matrix](COMPATIBILITY.md).
 Do not format data, delete locksettings, disable encryption, or flash unrelated
 partitions to work around a failed decrypt. Use a backed-up test device/data set.
 
