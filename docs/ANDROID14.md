@@ -27,6 +27,16 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
   validate the generated crypto ELF dependency closure before publishing artifacts.
   The earlier strict setting rejected unused AOSP test modules during Soong analysis.
 - Save source revisions, sync/build logs, dependency checks, images and hashes.
+- TWRP 14.1 upstream (TeamWin 54596c60b) renamed its packaged keystore AIDL
+  libraries to `-ndk` but left `Android.mk` and `libtar/Android.mk` linking the
+  removed `-ndk_platform` modules, so ninja failed before compiling. CI rewrites
+  those link names after sync (`scripts/patch-upstream-sources.sh`) and fails if
+  any recovery build input still references `-ndk_platform`.
+- `prebuilt/kernel` is an empty placeholder. Android 14 QPR extracts the kernel
+  version for VINTF and the userfaultfd-GC build property; the device disables
+  both (`PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS`, `PRODUCT_ENABLE_UFFD_GC`).
+- The ramdisk check resolves every ELF's NEEDED closure and every executable's
+  undefined dynamic symbols, including the patchelf-translated vendor blobs.
 
 ## What is not established
 

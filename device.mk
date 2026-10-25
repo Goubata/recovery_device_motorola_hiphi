@@ -13,6 +13,12 @@ PRODUCT_SOONG_NAMESPACES += \
 BOARD_SHIPPING_API_LEVEL := 31
 PRODUCT_SHIPPING_API_LEVEL := 31
 
+# prebuilt/kernel is an empty placeholder (the kernel is excluded from
+# recovery.img). Do not extract a kernel version for VINTF checks or for the
+# Android 14 userfaultfd GC property; recovery runs no ART runtime.
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+PRODUCT_ENABLE_UFFD_GC := false
+
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \

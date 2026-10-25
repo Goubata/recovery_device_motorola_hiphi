@@ -43,7 +43,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /opt/hostedtoolcache
+          # A full OrangeFox tree reached 92% of the runner disk; free unused SDKs.
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /opt/hostedtoolcache \
+            /usr/local/share/boost /usr/local/lib/node_modules /usr/local/share/powershell \
+            /usr/local/share/chromium /opt/microsoft /opt/google /usr/share/swift
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
           sudo apt-get update
           sudo apt-get install -y bc bison build-essential curl flex g++-multilib \
             gcc-multilib git gnupg gperf lib32ncurses-dev lib32readline-dev \
@@ -90,6 +94,8 @@ jobs:
           mkdir -p "$target"
           rsync -a --exclude=.git "$GITHUB_WORKSPACE/device-tree/" "$target/"
           "$target/scripts/prepare-a14-blobs.sh" 2>&1 | tee "$GITHUB_WORKSPACE/logs/blob-compat.log"
+          (cd "$GITHUB_WORKSPACE/android" && bash device/motorola/hiphi/scripts/patch-upstream-sources.sh "$FLAVOR") 2>&1 \
+            | tee "$GITHUB_WORKSPACE/logs/source-patches.log"
           git -C "$GITHUB_WORKSPACE/device-tree" rev-parse HEAD > "$GITHUB_WORKSPACE/logs/device-revision.txt"
       - name: Build recovery
         shell: bash
@@ -107,12 +113,15 @@ jobs:
           monitor_pid=$!
           trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
           bash device/motorola/hiphi/scripts/build-recovery.sh "$FLAVOR" 2>&1 | tee "$GITHUB_WORKSPACE/logs/build.log"
-      - name: Check crypto ELF dependencies
+      - name: Check ramdisk ELF dependencies and symbols
         shell: bash
         working-directory: android
         run: |
           set -euo pipefail
-          python3 device/motorola/hiphi/scripts/check-crypto-deps.py out/target/product/hiphi/recovery/root 2>&1 | tee "$GITHUB_WORKSPACE/logs/crypto-deps.log"
+          root=out/target/product/hiphi/recovery/root
+          python3 device/motorola/hiphi/scripts/check-crypto-deps.py "$root" 2>&1 | tee "$GITHUB_WORKSPACE/logs/crypto-deps.log"
+          cat "$root/prop.default" > "$GITHUB_WORKSPACE/logs/prop.default" 2>/dev/null || true
+          (cd "$root" && find . | sort) > "$GITHUB_WORKSPACE/logs/ramdisk-files.txt"
       - name: Collect images
         shell: bash
         working-directory: android
