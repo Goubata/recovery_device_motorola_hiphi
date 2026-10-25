@@ -9,7 +9,8 @@ case "$flavor" in
         ;;
     *) exit 2 ;;
 esac
-unset ALLOW_MISSING_DEPENDENCIES
+# Required by the official minimal recovery manifest; unused AOSP tests are absent.
+export ALLOW_MISSING_DEPENDENCIES=true
 export LC_ALL=C
 source build/envsetup.sh
 lunch twrp_hiphi-ap2a-eng

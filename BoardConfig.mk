@@ -7,7 +7,8 @@
 
 DEVICE_PATH := device/motorola/hiphi
 
-# Missing crypto dependencies must fail the build.
+# Minimal-manifest dependency mode is set by scripts/build-recovery.sh.
+# The packaged crypto stack is checked separately before artifact publication.
 
 # A/B
 AB_OTA_UPDATER := true

@@ -12,7 +12,8 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
 - Import the Android 13 branch's kernel modules, vendor/KeyMint libraries,
   task profiles, and Android 13 device fingerprints. Preserve fox_13's A/B recovery
   partition flags, supported device names, display geometry and notch layout,
-  while dropping obsolete FOX_VERSION and ALLOW_MISSING_DEPENDENCIES settings.
+  while dropping obsolete FOX_VERSION and setting minimal-manifest dependency mode
+  explicitly in the shared build script.
 - TWRP workflow uses the official minimal `twrp-14.1` manifest (including its
   matching vold, keystore and legacy wrapped-key support). OrangeFox uses its
   official sync script with `--branch 14.1`, not a TWRP build with a renamed image.
@@ -22,7 +23,9 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
   Package KeyMint V1, SecureClock V1 and SharedSecret V1
   explicitly; use the Android 14 vibrator NDK module name.
 - Fix the truncated EROFS system AVB key filename in recovery.fstab.
-- Stop hiding missing device dependencies with ALLOW_MISSING_DEPENDENCIES.
+- Use the official minimal-manifest ALLOW_MISSING_DEPENDENCIES=true setting;
+  validate the generated crypto ELF dependency closure before publishing artifacts.
+  The earlier strict setting rejected unused AOSP test modules during Soong analysis.
 - Save source revisions, sync/build logs, dependency checks, images and hashes.
 
 ## What is not established
