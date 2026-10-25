@@ -35,6 +35,11 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
 - `prebuilt/kernel` is an empty placeholder. Android 14 QPR extracts the kernel
   version for VINTF and the userfaultfd-GC build property; the device disables
   both (`PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS`, `PRODUCT_ENABLE_UFFD_GC`).
+- TeamWin/OrangeFox 14 init has no `vendor_load_properties()` hook, so
+  libinit_hiphi was never called. Per-SKU device/model/fingerprint props moved to
+  `hiphi-props.sh` (resetprop, `on init`). Removing BoardConfig's
+  `TARGET_RECOVERY_DEVICE_MODULES := libinit_hiphi` also stops it from wiping the
+  device.mk KeyMint/vibrator module list.
 - The ramdisk check resolves every ELF's NEEDED closure and every executable's
   undefined dynamic symbols, including the patchelf-translated vendor blobs.
 
