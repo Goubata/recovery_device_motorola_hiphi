@@ -12,7 +12,7 @@ esac
 unset ALLOW_MISSING_DEPENDENCIES
 export LC_ALL=C
 source build/envsetup.sh
-lunch twrp_hiphi-eng
+lunch twrp_hiphi-ap2a-eng
 mka recoveryimage -j"${BUILD_JOBS:-4}"
 image=out/target/product/hiphi/recovery.img
 test -s "$image"

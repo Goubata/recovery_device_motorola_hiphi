@@ -51,7 +51,7 @@ Current state of features:
 ```bash
 export ALLOW_MISSING_DEPENDENCIES=true
 source build/envsetup.sh
-lunch twrp_hiphi-eng
+lunch twrp_hiphi-ap2a-eng
 mka recoveryimage -j$(nproc --all)
 ```
 

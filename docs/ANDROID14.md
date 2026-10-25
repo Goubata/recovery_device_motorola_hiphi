@@ -50,6 +50,8 @@ unchanged. Do not change security patch overrides casually.
 GitHub Actions: select **Build TWRP (14.1)** or
 **Build OrangeFox (14.1 experimental)**, then **Run workflow** on
 `android-14-recovery`. Both workflows are manual to avoid unnecessary builds.
+Both current manifests use release configuration `ap2a`; the lunch target is
+`twrp_hiphi-ap2a-eng` (product-release-variant).
 Artifacts are experimental; a green build does not prove decryption works.
 Hosted runners may run out of disk/RAM; for that case use an x86_64 Ubuntu 22.04
 host with at least 16 GiB RAM and 150 GiB free storage and run the same commands.

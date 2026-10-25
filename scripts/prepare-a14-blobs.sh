@@ -8,11 +8,14 @@ command -v patchelf >/dev/null
 while IFS= read -r -d '' blob; do
     magic=$(od -An -tx1 -N4 "$blob" | tr -d ' \n')
     [[ "$magic" == 7f454c46 ]] || continue
+    # Kernel modules are relocatable ELF objects, not dynamic executables.
+    readelf -h "$blob" | grep -Eq 'Type:.*(DYN|EXEC)' || continue
+    needed_list=$(patchelf --print-needed "$blob")
     while IFS= read -r needed; do
         if [[ "$needed" == android.*-ndk_platform.so ]]; then
             replacement=${needed/-ndk_platform.so/-ndk.so}
             printf '%s: %s -> %s\n' "$blob" "$needed" "$replacement"
             patchelf --replace-needed "$needed" "$replacement" "$blob"
         fi
-    done < <(patchelf --print-needed "$blob")
+    done <<< "$needed_list"
 done < <(find recovery/root/system/bin recovery/root/vendor -type f -print0)
