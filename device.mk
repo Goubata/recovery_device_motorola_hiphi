@@ -54,14 +54,17 @@ PRODUCT_PACKAGES += \
     qcom_decrypt \
     qcom_decrypt_fbe
 
-# AIDL interfaces required by the Android 12 vendor KeyMint blobs.
+# AIDL interfaces required by the Android 12 vendor KeyMint blobs
+# (RKP was split out of KeyMint V1 in Android 14).
 TARGET_RECOVERY_DEVICE_MODULES += \
     android.hardware.security.keymint-V1-ndk \
+    android.hardware.security.rkp-V1-ndk \
     android.hardware.security.secureclock-V1-ndk \
     android.hardware.security.sharedsecret-V1-ndk
 
 RECOVERY_LIBRARY_SOURCE_FILES += \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.keymint-V1-ndk.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.rkp-V1-ndk.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.secureclock-V1-ndk.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.sharedsecret-V1-ndk.so
 

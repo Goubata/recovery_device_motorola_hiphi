@@ -43,6 +43,11 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
 - Density 400 made build/make generate the stock AOSP recovery text PNGs with
   a host Java tool that needs guava (absent from the minimal manifest).
   `TARGET_RECOVERY_UI_SCREEN_WIDTH :=` disables those unused images.
+- Android 14 moved IRemotelyProvisionedComponent and its parcelables out of
+  KeyMint V1 into `android.hardware.security.rkp` V1 (same frozen API). The
+  Android 12 KeyMint service and libqtikeymint would fail to link; the blob
+  preparation adds `android.hardware.security.rkp-V1-ndk.so` and the device
+  packages it. Unused Wi-Fi keystore blobs (missing Android 14 deps) removed.
 - The ramdisk check resolves every ELF's NEEDED closure and every executable's
   undefined dynamic symbols, including the patchelf-translated vendor blobs.
 
