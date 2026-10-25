@@ -1,0 +1,10 @@
+name: Build TWRP (14.1)
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    uses: ./.github/workflows/recovery-build.yml
+    with:
+      flavor: twrp
+    permissions:
+      contents: read

@@ -1,3 +1,7 @@
+# Experimental Android 14+ bring-up
+
+Build and decryption status: **unverified**. See [Android 14 bring-up notes](docs/ANDROID14.md) for the changes, TWRP/OrangeFox workflows and required hardware validation.
+
 Device configuration for Motorola Edge 30 Pro / Edge Plus (2022) / Edge Plus 5G UW / Edge X30 (hiphi/hiphic/hiphid)
 =========================================
 

@@ -7,8 +7,7 @@
 
 DEVICE_PATH := device/motorola/hiphi
 
-# For building with minimal manifest
-ALLOW_MISSING_DEPENDENCIES := true
+# Missing crypto dependencies must fail the build.
 
 # A/B
 AB_OTA_UPDATER := true
@@ -124,7 +123,7 @@ BOARD_USES_QCOM_FBE_DECRYPTION := true
 TW_USE_FSCRYPT_POLICY := 2
 
 # TWRP Configuration
-TW_DEVICE_VERSION := 2-12
+TW_DEVICE_VERSION := hiphi-a14-experimental
 TW_THEME := portrait_hdpi
 TW_Y_OFFSET := 85
 TW_H_OFFSET := -85

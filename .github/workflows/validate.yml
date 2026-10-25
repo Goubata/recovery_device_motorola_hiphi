@@ -1,0 +1,44 @@
+name: Validate device tree
+on:
+  push:
+    branches: [android-14-recovery]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Validate scripts, workflows and blob preparation
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y patchelf python3-yaml
+          bash -n scripts/build-recovery.sh scripts/prepare-a14-blobs.sh
+          sh -n scripts/collect-crypto-logs.sh
+          python3 -m py_compile scripts/check-crypto-deps.py
+          python3 - <<'PY'
+          import pathlib, yaml
+          for path in pathlib.Path('.github/workflows').glob('*.yml'):
+              doc = yaml.safe_load(path.read_text())
+              assert isinstance(doc['jobs'], dict), path
+          PY
+          git diff --check
+          test "$(grep -c '/avb/s-gsi.a>' recovery/root/system/etc/recovery.fstab)" = 0
+          cp -a recovery /tmp/original-recovery
+          bash scripts/prepare-a14-blobs.sh
+          while IFS= read -r -d '' blob; do
+            if readelf -h "$blob" >/dev/null 2>&1; then
+              if readelf -d "$blob" | grep -q 'NEEDED.*ndk_platform'; then
+                echo "Unconverted dependency in $blob"
+                exit 1
+              fi
+            fi
+          done < <(find recovery/root/system/bin recovery/root/vendor -type f -print0)
+          # The second application must leave the prepared copy unchanged.
+          find recovery -type f -exec sha256sum '{}' + | sort > /tmp/before
+          bash scripts/prepare-a14-blobs.sh
+          find recovery -type f -exec sha256sum '{}' + | sort > /tmp/after
+          diff -u /tmp/before /tmp/after

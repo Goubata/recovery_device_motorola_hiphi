@@ -1,0 +1,10 @@
+name: Build OrangeFox (14.1 experimental)
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    uses: ./.github/workflows/recovery-build.yml
+    with:
+      flavor: orangefox
+    permissions:
+      contents: read

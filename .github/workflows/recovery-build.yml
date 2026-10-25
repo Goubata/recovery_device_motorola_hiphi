@@ -1,0 +1,103 @@
+name: Recovery build implementation
+on:
+  workflow_call:
+    inputs:
+      flavor:
+        type: string
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: recovery-${{ inputs.flavor }}-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
+    env:
+      FLAVOR: ${{ inputs.flavor }}
+      BUILD_JOBS: '4'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          path: device-tree
+      - name: Prepare host
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /opt/hostedtoolcache
+          sudo apt-get update
+          sudo apt-get install -y bc bison build-essential curl flex g++-multilib \
+            gcc-multilib git gnupg gperf lib32ncurses-dev lib32readline-dev \
+            lib32z1-dev libelf-dev liblz4-tool libncurses5 libncurses5-dev \
+            libsdl1.2-dev libssl-dev libxml2-utils lzop openjdk-17-jdk \
+            patchelf pngcrush python3 rsync schedtool squashfs-tools unzip \
+            xsltproc zip zlib1g-dev
+          mkdir -p "$HOME/bin" "$GITHUB_WORKSPACE/logs" "$GITHUB_WORKSPACE/artifacts"
+          curl --fail --location --retry 3 https://storage.googleapis.com/git-repo-downloads/repo -o "$HOME/bin/repo"
+          chmod +x "$HOME/bin/repo"
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+          git config --global user.name 'Recovery CI'
+          git config --global user.email 'recovery-ci@users.noreply.github.com'
+          df -h
+      - name: Sync recovery sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/android"
+          cd "$GITHUB_WORKSPACE/android"
+          if [[ "$FLAVOR" == twrp ]]; then
+            repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-14.1
+            repo sync -c -j4 --no-clone-bundle --no-tags 2>&1 | tee "$GITHUB_WORKSPACE/logs/sync.log"
+          elif [[ "$FLAVOR" == orangefox ]]; then
+            git clone https://gitlab.com/OrangeFox/sync.git "$GITHUB_WORKSPACE/fox-sync"
+            git -C "$GITHUB_WORKSPACE/fox-sync" rev-parse HEAD > "$GITHUB_WORKSPACE/logs/fox-sync-revision.txt"
+            "$GITHUB_WORKSPACE/fox-sync/orangefox_sync.sh" --branch 14.1 --path "$GITHUB_WORKSPACE/android" 2>&1 | tee "$GITHUB_WORKSPACE/logs/sync.log"
+          else
+            exit 2
+          fi
+          repo manifest -r -o "$GITHUB_WORKSPACE/logs/source-manifest.xml"
+      - name: Prepare hiphi device tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          target="$GITHUB_WORKSPACE/android/device/motorola/hiphi"
+          mkdir -p "$target"
+          rsync -a --exclude=.git "$GITHUB_WORKSPACE/device-tree/" "$target/"
+          "$target/scripts/prepare-a14-blobs.sh" 2>&1 | tee "$GITHUB_WORKSPACE/logs/blob-compat.log"
+          git -C "$GITHUB_WORKSPACE/device-tree" rev-parse HEAD > "$GITHUB_WORKSPACE/logs/device-revision.txt"
+      - name: Build recovery
+        shell: bash
+        working-directory: android
+        run: |
+          set -euo pipefail
+          bash device/motorola/hiphi/scripts/build-recovery.sh "$FLAVOR" 2>&1 | tee "$GITHUB_WORKSPACE/logs/build.log"
+      - name: Check crypto ELF dependencies
+        shell: bash
+        working-directory: android
+        run: |
+          set -euo pipefail
+          python3 device/motorola/hiphi/scripts/check-crypto-deps.py out/target/product/hiphi/recovery/root 2>&1 | tee "$GITHUB_WORKSPACE/logs/crypto-deps.log"
+      - name: Collect images
+        shell: bash
+        working-directory: android
+        run: |
+          set -euo pipefail
+          cp out/target/product/hiphi/recovery.img "$GITHUB_WORKSPACE/artifacts/${FLAVOR}-hiphi-experimental.img"
+          find out/target/product/hiphi -maxdepth 1 -iname '*fox*.zip' -exec cp '{}' "$GITHUB_WORKSPACE/artifacts/" \;
+          cd "$GITHUB_WORKSPACE/artifacts"
+          sha256sum * > SHA256SUMS
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ${{ inputs.flavor }}-hiphi-logs
+          path: logs/
+          retention-days: 14
+      - name: Upload recovery artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ${{ inputs.flavor }}-hiphi-experimental
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 14
