@@ -47,6 +47,25 @@ Sources:
 - [Android 17 KeyStorage](https://android.googlesource.com/platform/system/vold/+/refs/tags/android-17.0.0_r1/KeyStorage.cpp)
 - [AOSP FBE configuration](https://source.android.com/docs/security/features/encryption/file-based)
 
+## hiphi ROM configuration cross-check
+
+The hiphi lineage-24.0 device tree at 9dc514fa93a7c16764af10ad244961b29c073204
+inherits sm8475-common. Its common fstab at
+ae57de31cb45c021ce78dc0790dc43577e69278c still uses F2FS, fscrypt v2,
+AES-256-XTS/AES-256-CTS, inlinecrypt_optimized and wrappedkey_v0 for /data,
+and AES-256-XTS:wrappedkey_v0 for metadata encryption. These match this
+recovery's fallback data encryption policy. This checks configuration only;
+it does not verify KeyMint, firmware compatibility, boot or decryption.
+
+The newer ROM tree also has different super-partition build dimensions from
+the old recovery tree. This project builds only recovery.img, retains the
+upstream recovery partition size, and relies on runtime logical-partition
+metadata. It does not generate or flash super.img. Verify actual partition
+sizes before extending the build to other image types.
+
+- [hiphi Android 17 device configuration](https://github.com/motorola-sm8450-devs/android_device_motorola_hiphi/blob/9dc514fa93a7c16764af10ad244961b29c073204/BoardConfig.mk)
+- [Inherited common fstab](https://github.com/LineageOS/android_device_motorola_sm8475-common/blob/ae57de31cb45c021ce78dc0790dc43577e69278c/init/fstab.qcom)
+
 ## Recording a result
 
 For each test, record ROM name/build/version, hiphi SKU, firmware/vendor version,
