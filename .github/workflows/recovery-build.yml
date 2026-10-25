@@ -11,7 +11,24 @@ concurrency:
   group: recovery-${{ inputs.flavor }}-${{ github.ref }}
   cancel-in-progress: false
 jobs:
+  product_config:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Check product includes against selected build system
+        env:
+          FLAVOR: ${{ inputs.flavor }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$FLAVOR" in
+            twrp) git clone --depth 1 -b android-14.1 https://github.com/TeamWin/android_build.git "$RUNNER_TEMP/build-make" ;;
+            orangefox) git clone --depth 1 -b android-14 https://github.com/nebrassy/android_build.git "$RUNNER_TEMP/build-make" ;;
+            *) exit 2 ;;
+          esac
+          python3 scripts/check-product-includes.py "$RUNNER_TEMP/build-make"
   build:
+    needs: product_config
     runs-on: ubuntu-22.04
     timeout-minutes: 360
     env:
