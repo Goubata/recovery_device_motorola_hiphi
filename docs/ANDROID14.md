@@ -56,7 +56,10 @@ GitHub Actions: select **Build TWRP (14.1)** or
 Both current manifests use release configuration `ap2a`; the lunch target is
 `twrp_hiphi-ap2a-eng` (product-release-variant).
 Artifacts are experimental; a green build does not prove decryption works.
-Hosted runners may run out of disk/RAM; for that case use an x86_64 Ubuntu 22.04
+Hosted builds use two parallel jobs, a 6 GiB Go memory limit, 12 GiB extra swap
+and periodic memory/disk diagnostics. An earlier OrangeFox run lost runner
+communication during compilation, without a saved compiler error; its exact
+cause is unconfirmed. Hosted runners may still run out of disk/RAM; for that case use an x86_64 Ubuntu 22.04
 host with at least 16 GiB RAM and 150 GiB free storage and run the same commands.
 Workflow source manifests record exact revisions for each individual build;
 future runs intentionally follow maintained upstream branches.

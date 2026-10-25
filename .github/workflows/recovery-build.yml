@@ -33,7 +33,8 @@ jobs:
     timeout-minutes: 360
     env:
       FLAVOR: ${{ inputs.flavor }}
-      BUILD_JOBS: '4'
+      BUILD_JOBS: '2'
+      GOMEMLIMIT: 6GiB
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -56,6 +57,13 @@ jobs:
           echo "$HOME/bin" >> "$GITHUB_PATH"
           git config --global user.name 'Recovery CI'
           git config --global user.email 'recovery-ci@users.noreply.github.com'
+          # Give the Soong/linker workload room to swap on hosted runners.
+          sudo fallocate -l 12G "$RUNNER_TEMP/hiphi-build.swap"
+          sudo chmod 600 "$RUNNER_TEMP/hiphi-build.swap"
+          sudo mkswap "$RUNNER_TEMP/hiphi-build.swap"
+          sudo swapon "$RUNNER_TEMP/hiphi-build.swap"
+          free -h
+          swapon --show
           df -h
       - name: Sync recovery sources
         shell: bash
@@ -88,6 +96,16 @@ jobs:
         working-directory: android
         run: |
           set -euo pipefail
+          (
+            while sleep 60; do
+              date -u
+              free -m
+              df -h "$GITHUB_WORKSPACE"
+              ps -eo comm,rss --sort=-rss | sed -n '1,8p'
+            done
+          ) > "$GITHUB_WORKSPACE/logs/resources.log" 2>&1 &
+          monitor_pid=$!
+          trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
           bash device/motorola/hiphi/scripts/build-recovery.sh "$FLAVOR" 2>&1 | tee "$GITHUB_WORKSPACE/logs/build.log"
       - name: Check crypto ELF dependencies
         shell: bash
