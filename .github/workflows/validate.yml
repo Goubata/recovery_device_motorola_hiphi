@@ -31,7 +31,7 @@ jobs:
           bash scripts/prepare-a14-blobs.sh
           while IFS= read -r -d '' blob; do
             if readelf -h "$blob" >/dev/null 2>&1; then
-              if readelf -d "$blob" | grep -q 'NEEDED.*ndk_platform'; then
+              if readelf -d "$blob" | grep -q 'NEEDED.*\[android\..*ndk_platform'; then
                 echo "Unconverted dependency in $blob"
                 exit 1
               fi

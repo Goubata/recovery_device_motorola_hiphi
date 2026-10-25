@@ -9,7 +9,7 @@ while IFS= read -r -d '' blob; do
     magic=$(od -An -tx1 -N4 "$blob" | tr -d ' \n')
     [[ "$magic" == 7f454c46 ]] || continue
     while IFS= read -r needed; do
-        if [[ "$needed" == *-ndk_platform.so ]]; then
+        if [[ "$needed" == android.*-ndk_platform.so ]]; then
             replacement=${needed/-ndk_platform.so/-ndk.so}
             printf '%s: %s -> %s\n' "$blob" "$needed" "$replacement"
             patchelf --replace-needed "$needed" "$replacement" "$blob"

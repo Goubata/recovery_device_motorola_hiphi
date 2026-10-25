@@ -16,9 +16,10 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
 - TWRP workflow uses the official minimal `twrp-14.1` manifest (including its
   matching vold, keystore and legacy wrapped-key support). OrangeFox uses its
   official sync script with `--branch 14.1`, not a TWRP build with a renamed image.
-- Translate old `*-ndk_platform.so` dependencies to the same interface version's
+- Translate old Android `*-ndk_platform.so` dependencies to the same interface version's
   `*-ndk.so` in a disposable copy of the vendor blobs. The repository's original
-  blobs remain unchanged. Package KeyMint V1, SecureClock V1 and SharedSecret V1
+  blobs remain unchanged. Private vendor AIDL library filenames stay unchanged.
+  Package KeyMint V1, SecureClock V1 and SharedSecret V1
   explicitly; use the Android 14 vibrator NDK module name.
 - Fix the truncated EROFS system AVB key filename in recovery.fstab.
 - Stop hiding missing device dependencies with ALLOW_MISSING_DEPENDENCIES.
