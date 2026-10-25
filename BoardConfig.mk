@@ -47,6 +47,10 @@ TARGET_USES_REMOTEPROC := true
 
 # Display
 TARGET_SCREEN_DENSITY := 400
+# Density 400 makes build/make default this to 1080 and generate the stock
+# AOSP recovery text PNGs with a host Java tool (icu4j -> guava), which the
+# minimal TWRP manifest lacks. TWRP/OrangeFox never use those images.
+TARGET_RECOVERY_UI_SCREEN_WIDTH :=
 
 # Kernel
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel

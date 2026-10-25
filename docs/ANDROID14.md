@@ -40,6 +40,9 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
   `hiphi-props.sh` (resetprop, `on init`). Removing BoardConfig's
   `TARGET_RECOVERY_DEVICE_MODULES := libinit_hiphi` also stops it from wiping the
   device.mk KeyMint/vibrator module list.
+- Density 400 made build/make generate the stock AOSP recovery text PNGs with
+  a host Java tool that needs guava (absent from the minimal manifest).
+  `TARGET_RECOVERY_UI_SCREEN_WIDTH :=` disables those unused images.
 - The ramdisk check resolves every ELF's NEEDED closure and every executable's
   undefined dynamic symbols, including the patchelf-translated vendor blobs.
 

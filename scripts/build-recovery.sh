@@ -14,6 +14,8 @@ export ALLOW_MISSING_DEPENDENCIES=true
 export LC_ALL=C
 source build/envsetup.sh
 lunch twrp_hiphi-ap2a-eng
+# Keep going after a failed action so one CI run reports every failure.
+export NINJA_ARGS="${NINJA_ARGS:--k 0}"
 mka recoveryimage -j"${BUILD_JOBS:-2}"
 image=out/target/product/hiphi/recovery.img
 test -s "$image"

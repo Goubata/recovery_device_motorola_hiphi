@@ -112,7 +112,11 @@ jobs:
           ) > "$GITHUB_WORKSPACE/logs/resources.log" 2>&1 &
           monitor_pid=$!
           trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
-          bash device/motorola/hiphi/scripts/build-recovery.sh "$FLAVOR" 2>&1 | tee "$GITHUB_WORKSPACE/logs/build.log"
+          status=0
+          bash device/motorola/hiphi/scripts/build-recovery.sh "$FLAVOR" 2>&1 | tee "$GITHUB_WORKSPACE/logs/build.log" || status=$?
+          # Summarise every failed action (the build continues past failures).
+          grep -A12 '^FAILED: ' "$GITHUB_WORKSPACE/logs/build.log" > "$GITHUB_WORKSPACE/logs/failures.log" || true
+          exit "$status"
       - name: Check ramdisk ELF dependencies and symbols
         shell: bash
         working-directory: android
