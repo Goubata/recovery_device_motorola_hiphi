@@ -16,7 +16,7 @@ jobs:
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y patchelf python3-yaml
-          bash -n scripts/build-recovery.sh scripts/prepare-a14-blobs.sh
+          bash -n scripts/build-recovery.sh scripts/prepare-a14-blobs.sh scripts/orangefox-config.sh
           sh -n scripts/collect-crypto-logs.sh
           python3 -m py_compile scripts/check-crypto-deps.py
           python3 - <<'PY'

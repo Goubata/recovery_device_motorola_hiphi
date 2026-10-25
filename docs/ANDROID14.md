@@ -2,10 +2,17 @@
 
 This is a separate hiphi recovery project. Upstream device tree:
 https://github.com/motorola-sm8450-devs/recovery_device_motorola_hiphi
-Baseline: c92ac5f (twrp-12.1). Original vendor blobs and partition layout are retained.
+Baseline: upstream twrp-13 b9f2700, with OrangeFox-specific settings from
+fox_13 9453279. The first bring-up commit started from c92ac5f (twrp-12.1);
+the follow-up imports every twrp-13 file difference except the release label.
+Vendor blobs are the upstream Android 13 versions; the partition layout is retained.
 
 ## What changed
 
+- Import the Android 13 branch's kernel modules, vendor/KeyMint libraries,
+  task profiles, and Android 13 device fingerprints. Preserve fox_13's A/B recovery
+  partition flags, supported device names, display geometry and notch layout,
+  while dropping obsolete FOX_VERSION and ALLOW_MISSING_DEPENDENCIES settings.
 - TWRP workflow uses the official minimal `twrp-14.1` manifest (including its
   matching vold, keystore and legacy wrapped-key support). OrangeFox uses its
   official sync script with `--branch 14.1`, not a TWRP build with a renamed image.

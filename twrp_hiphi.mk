@@ -28,6 +28,6 @@ PRODUCT_MANUFACTURER := motorola
 PRODUCT_GMS_CLIENTID_BASE := android-motorola
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    PRIVATE_BUILD_DESC="hiphi-user 12 S3SHS32.12-42-11-5 bf0951 release-keys"
+    PRIVATE_BUILD_DESC="hiphi-user 12 T1SH33.35-23-20 00de5 release-keys"
 
-BUILD_FINGERPRINT := motorola/hiphi/hiphi:12/S3SHS32.12-42-11-5/bf0951:user/release-keys
+BUILD_FINGERPRINT := motorola/hiphi/hiphi:12/T1SH33.35-23-20/00de5:user/release-keys

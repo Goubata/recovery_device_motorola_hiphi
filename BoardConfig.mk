@@ -149,3 +149,13 @@ TW_SUPPORT_INPUT_AIDL_HAPTICS_FIX_OFF := true
 # Debug flags
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
+
+# Preserve the upstream fox_13 display geometry for OrangeFox builds only.
+ifeq ($(FOX_BUILD_DEVICE),hiphi)
+TARGET_SCREEN_HEIGHT := 2400
+TARGET_SCREEN_WIDTH := 1080
+TW_Y_OFFSET := 0
+TW_H_OFFSET := 0
+TW_CUSTOM_CPU_TEMP_PATH :=
+TARGET_USE_CUSTOM_LUN_FILE_PATH :=
+endif

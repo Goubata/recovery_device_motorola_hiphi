@@ -5,9 +5,7 @@ flavor=${1:?Usage: build-recovery.sh twrp|orangefox}
 case "$flavor" in
     twrp) ;;
     orangefox)
-        export FOX_BUILD_DEVICE=hiphi
-        export OF_MAINTAINER=Goubata
-        export FOX_VARIANT=AOSP
+        source device/motorola/hiphi/scripts/orangefox-config.sh
         ;;
     *) exit 2 ;;
 esac
