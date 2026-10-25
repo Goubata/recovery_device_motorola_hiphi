@@ -52,7 +52,7 @@ jobs:
           elif [[ "$FLAVOR" == orangefox ]]; then
             git clone https://gitlab.com/OrangeFox/sync.git "$GITHUB_WORKSPACE/fox-sync"
             git -C "$GITHUB_WORKSPACE/fox-sync" rev-parse HEAD > "$GITHUB_WORKSPACE/logs/fox-sync-revision.txt"
-            "$GITHUB_WORKSPACE/fox-sync/orangefox_sync.sh" --branch 14.1 --path "$GITHUB_WORKSPACE/android" 2>&1 | tee "$GITHUB_WORKSPACE/logs/sync.log"
+            (cd "$GITHUB_WORKSPACE/fox-sync" && ./orangefox_sync.sh --branch 14.1 --path "$GITHUB_WORKSPACE/android") 2>&1 | tee "$GITHUB_WORKSPACE/logs/sync.log"
           else
             exit 2
           fi
