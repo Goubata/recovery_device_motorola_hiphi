@@ -48,6 +48,13 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
   Android 12 KeyMint service and libqtikeymint would fail to link; the blob
   preparation adds `android.hardware.security.rkp-V1-ndk.so` and the device
   packages it. Unused Wi-Fi keystore blobs (missing Android 14 deps) removed.
+- TWRP android-14.1 `bootable/recovery` does not compile with crypto against the
+  android-14.1 vold: libtar uses the API of 97b849918 ("dynamically choose
+  fscrypt policy [1/2]") whose vold half exists only on android-12.1, and the
+  partition code still calls FDE helpers removed from the Android 14 vold.
+  `scripts/source-patches/twrp-bootable_recovery-a14-vold.patch` reverts
+  97b849918 and drops the unreachable FDE calls, matching OrangeFox fox_14.1.
+  The FBE decryption path is unchanged.
 - The ramdisk check resolves every ELF's NEEDED closure and every executable's
   undefined dynamic symbols, including the patchelf-translated vendor blobs.
 

@@ -123,9 +123,9 @@ jobs:
         run: |
           set -euo pipefail
           root=out/target/product/hiphi/recovery/root
-          python3 device/motorola/hiphi/scripts/check-crypto-deps.py "$root" 2>&1 | tee "$GITHUB_WORKSPACE/logs/crypto-deps.log"
           cat "$root/prop.default" > "$GITHUB_WORKSPACE/logs/prop.default" 2>/dev/null || true
           (cd "$root" && find . | sort) > "$GITHUB_WORKSPACE/logs/ramdisk-files.txt"
+          python3 device/motorola/hiphi/scripts/check-crypto-deps.py "$root" 2>&1 | tee "$GITHUB_WORKSPACE/logs/crypto-deps.log"
       - name: Collect images
         shell: bash
         working-directory: android
