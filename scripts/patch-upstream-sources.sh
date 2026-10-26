@@ -37,7 +37,10 @@ fi
 if [[ "$flavor" == twrp ]]; then
     for mk in bootable/recovery/Android.mk bootable/recovery/libtar/Android.mk; do
         if grep -q -- '-ndk_platform\b' "$mk"; then
-            sed -i 's/-ndk_platform\b/-ndk/g' "$mk"
+            # libvold is compiled against keystore2_use_latest_aidl_ndk_shared
+            # (V4); link the same version it was built with, as OrangeFox does.
+            sed -i -e 's/android\.system\.keystore2-V1-ndk_platform\b/android.system.keystore2-V4-ndk/g' \
+                -e 's/-ndk_platform\b/-ndk/g' "$mk"
             echo "Patched AIDL backend names in $mk"
         fi
     done

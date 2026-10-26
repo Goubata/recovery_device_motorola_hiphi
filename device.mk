@@ -60,9 +60,11 @@ TARGET_RECOVERY_DEVICE_MODULES += \
     android.hardware.security.keymint-V1-ndk \
     android.hardware.security.rkp-V1-ndk \
     android.hardware.security.secureclock-V1-ndk \
-    android.hardware.security.sharedsecret-V1-ndk
+    android.hardware.security.sharedsecret-V1-ndk \
+    android.system.keystore2-V4-ndk
 
 RECOVERY_LIBRARY_SOURCE_FILES += \
+    $(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V4-ndk.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.keymint-V1-ndk.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.rkp-V1-ndk.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.secureclock-V1-ndk.so \

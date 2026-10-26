@@ -48,6 +48,7 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
   Android 12 KeyMint service and libqtikeymint would fail to link; the blob
   preparation adds `android.hardware.security.rkp-V1-ndk.so` and the device
   packages it. Unused Wi-Fi keystore blobs (missing Android 14 deps) removed.
+- TWRP links keystore2 V4 (the version libvold is compiled with), like OrangeFox.
 - TWRP android-14.1 `bootable/recovery` does not compile with crypto against the
   android-14.1 vold: libtar uses the API of 97b849918 ("dynamically choose
   fscrypt policy [1/2]") whose vold half exists only on android-12.1, and the
