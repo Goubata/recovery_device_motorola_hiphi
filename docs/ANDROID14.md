@@ -58,6 +58,9 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
   The FBE decryption path is unchanged. The patch also links libvold's own
   dependencies into libtar/recovery and makes `twrp_ramdisk` require
   `task_profiles.json`, which its post-install step copies (a build-order race).
+- TWRP 14.1 packages only the Android 12 keystore AIDL libraries, but its
+  Android 14 keystore2 needs KeyMint V3, RKP V3, suspend, confirmationui and
+  aaid libraries; without them keystore2 cannot start. device.mk packages them.
 - The ramdisk check resolves every ELF's NEEDED closure and every executable's
   undefined dynamic symbols, including the patchelf-translated vendor blobs.
 
