@@ -66,7 +66,10 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
 
 ## What is not established
 
-No successful build or hardware decryption result is recorded yet. These changes
+Both flavors build in CI as of 2026-10-26 (TWRP run 40268460044 at d804057,
+OrangeFox run 40266096685 at 24d2fb3); every ELF in both final ramdisks has its
+dependencies present and executable symbols resolved. No hardware decryption
+result is recorded yet. These changes
 are a bring-up candidate, not proof that the reported Android 14 failure is fixed.
 The old tree already enables FBE, metadata encryption, fscrypt v2, vendor-fstab
 parsing and KeyMint. A version flag alone is not a decryption fix. Exact root cause

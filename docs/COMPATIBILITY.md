@@ -6,7 +6,7 @@ where the kernel, vendor firmware and encryption policy remain compatible.
 
 | Installed ROM | Source audit | Build | Metadata/DE | Primary-user CE | Work/private profiles |
 |---|---|---|---|---|---|
-| Android 14 | AOSP r1 compared | Pending | Not tested | Not tested | Not tested |
+| Android 14 | AOSP r1 compared | CI pass (TWRP + OrangeFox) | Not tested | Not tested | Not tested |
 | Android 15 | AOSP r1 compared | Same recovery candidate | Not tested | Not tested | Not tested |
 | Android 16 | AOSP r1 compared | Same recovery candidate | Not tested | Not tested | Not tested |
 | Android 17 | AOSP r1 compared | Same recovery candidate | Not tested | Not tested | Changed upstream; not implemented/tested |
