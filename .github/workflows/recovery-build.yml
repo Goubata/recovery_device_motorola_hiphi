@@ -41,6 +41,7 @@ jobs:
           path: device-tree
       - name: Prepare host
         shell: bash
+        timeout-minutes: 20
         run: |
           set -euo pipefail
           # A full OrangeFox tree reached 92% of the runner disk; free unused SDKs.
