@@ -400,3 +400,17 @@ index 171fecc..563efe8 100755
  		exit(ret);
  	} else {
  		// Parent
+diff --git a/prebuilt/Android.mk b/prebuilt/Android.mk
+index f3b7160..fa83e52 100755
+--- a/prebuilt/Android.mk
++++ b/prebuilt/Android.mk
+@@ -473,7 +473,8 @@ LOCAL_REQUIRED_MODULES += init_second_stage.recovery \
+     plat_hardware_contexts \
+     vndservice_contexts \
+     plat_keystore2_key_contexts \
+-    vendor_hwservice_contexts
++    vendor_hwservice_contexts \
++    task_profiles.json
+ 
+ include $(BUILD_PHONY_PACKAGE)
+ 

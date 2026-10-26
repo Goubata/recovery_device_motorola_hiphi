@@ -55,7 +55,9 @@ Vendor blobs are the upstream Android 13 versions; the partition layout is retai
   partition code still calls FDE helpers removed from the Android 14 vold.
   `scripts/source-patches/twrp-bootable_recovery-a14-vold.patch` reverts
   97b849918 and drops the unreachable FDE calls, matching OrangeFox fox_14.1.
-  The FBE decryption path is unchanged.
+  The FBE decryption path is unchanged. The patch also links libvold's own
+  dependencies into libtar/recovery and makes `twrp_ramdisk` require
+  `task_profiles.json`, which its post-install step copies (a build-order race).
 - The ramdisk check resolves every ELF's NEEDED closure and every executable's
   undefined dynamic symbols, including the patchelf-translated vendor blobs.
 

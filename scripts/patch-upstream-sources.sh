@@ -26,6 +26,9 @@ apply_once() {
 # android-12.1, and partition code still calls full-disk-encryption helpers
 # that the Android 14 vold removed. Revert 97b849918 and drop the FDE-only
 # calls, matching what OrangeFox fox_14.1 ships. FBE decryption is unchanged.
+# The same patch links libvold's own dependencies (libsysutils,
+# libboot_control_client, libasync_safe) and makes twrp_ramdisk require
+# task_profiles.json, which its post-install step copies (upstream race).
 if [[ "$flavor" == twrp ]]; then
     apply_once bootable/recovery "$patches/twrp-bootable_recovery-a14-vold.patch"
 fi
